@@ -52,6 +52,11 @@ const postSchema = new Schema({
     required: true,
     default: true,
   },
+  shop: {
+    type: Schema.Types.ObjectId,
+    ref: "Shop",
+    required: true,
+  },
 });
 
 const Post = mongoose.model("Post", postSchema);

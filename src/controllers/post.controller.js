@@ -1,6 +1,5 @@
 const Post = require("../models/post.model");
-const Booking = require("../models/booking.model");
-const Comment = require("../models/comment.model");
+const Shop = require("../models/shop.model");
 
 const postController = {
   getAll: async (req, res) => {
@@ -24,8 +23,8 @@ const postController = {
   create: async (req, res) => {
     try {
       const post = await Post.create(req.body);
-      await Booking.findByIdAndUpdate(post.booking, {
-        $push: { post: post._id },
+      await Shop.findByIdAndUpdate(post.shop, {
+        $push: { posts: post._id },
       });
       res.status(201).send(post);
     } catch (error) {
