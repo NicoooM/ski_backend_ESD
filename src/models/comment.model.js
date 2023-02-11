@@ -13,7 +13,7 @@ const commentSchema = new Schema({
   stars: {
     type: Number,
     required: true,
-    min: 1,
+    min: 0.5,
     max: 5,
   },
   createdAt: {

@@ -12,7 +12,18 @@ const shopController = {
 
   getOne: async (req, res) => {
     try {
-      const shop = await Shop.findById(req.params.id);
+      const shop = await Shop.findById(req.params.id).populate({
+        path: "posts",
+        populate: [
+          {
+            path: "bookings",
+          },
+          {
+            path: "comments",
+          },
+        ],
+      });
+      console.log(shop);
       res.status(200).send(shop);
     } catch (error) {
       res.status(400).send(error);

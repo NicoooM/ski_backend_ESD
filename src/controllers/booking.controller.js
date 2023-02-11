@@ -4,7 +4,10 @@ const Post = require("../models/post.model");
 const bookingController = {
   getAll: async (req, res) => {
     try {
-      const bookings = await Booking.find();
+      const { postId } = req.query;
+      const bookings = await Booking.find({
+        post: postId,
+      });
       res.status(200).send(bookings);
     } catch (error) {
       res.status(400).send(error);
