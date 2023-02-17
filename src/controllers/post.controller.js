@@ -1,5 +1,6 @@
 const Post = require("../models/post.model");
 const Shop = require("../models/shop.model");
+const User = require("../models/user.model");
 
 const postController = {
   getAll: async (req, res) => {
@@ -50,7 +51,11 @@ const postController = {
 
   create: async (req, res) => {
     try {
-      const post = await Post.create(req.body);
+      const user = await User.findById(req.user.id);
+      if (!user.shop) {
+        return res.status(401).send({ message: "You don't have a shop" });
+      }
+      const post = await Post.create({ ...req.body, shop: user.shop });
       await Shop.findByIdAndUpdate(post.shop, {
         $push: { posts: post._id },
       });
@@ -62,10 +67,15 @@ const postController = {
 
   update: async (req, res) => {
     try {
-      const post = await Post.findByIdAndUpdate(req.params.id, req.body, {
+      const user = await User.findById(req.user.id);
+      const post = await Post.findById(req.params.id);
+      if (post.shop.toString() !== user.shop.toString()) {
+        return res.status(401).send({ message: "You are not the owner" });
+      }
+      const newPost = await Post.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
       });
-      res.status(200).send(post);
+      res.status(200).send(newPost);
     } catch (error) {
       res.status(400).send({ message: "Can't update post" });
     }
@@ -73,6 +83,11 @@ const postController = {
 
   delete: async (req, res) => {
     try {
+      const user = await User.findById(req.user.id);
+      const post = await Post.findById(req.params.id);
+      if (post.shop.toString() !== user.shop.toString()) {
+        return res.status(401).send({ message: "You are not the owner" });
+      }
       await Post.findByIdAndDelete(req.params.id);
       res.status(200).send({ message: "Post deleted" });
     } catch (error) {

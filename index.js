@@ -8,6 +8,7 @@ const bookingRoutes = require("./src/routes/booking.routes");
 const postRoutes = require("./src/routes/post.routes");
 const commentRoutes = require("./src/routes/comment.routes");
 const shopRoutes = require("./src/routes/shop.routes");
+const authRoutes = require("./src/routes/auth.routes");
 
 connectMongo();
 
@@ -22,6 +23,7 @@ app.use(bookingRoutes);
 app.use(postRoutes);
 app.use(commentRoutes);
 app.use(shopRoutes);
+app.use(authRoutes);
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);

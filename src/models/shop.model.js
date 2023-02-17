@@ -20,8 +20,9 @@ const shopSchema = new Schema({
     type: String,
     required: true,
   },
-  password: {
-    type: String,
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
 });
