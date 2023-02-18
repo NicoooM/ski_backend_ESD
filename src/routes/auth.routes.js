@@ -9,5 +9,6 @@ router.post(`${endpoint}/login`, AuthController.login);
 router.post(`${endpoint}/register`, AuthController.register);
 router.post(`${endpoint}/forgot-password`, AuthController.forgotPassword);
 router.post(`${endpoint}/reset-password/:id`, AuthController.resetPassword);
+router.get(`${endpoint}/me`, authMiddleware, AuthController.getUserMe);
 
 module.exports = router;

@@ -103,6 +103,16 @@ const AuthController = {
       res.status(500).send({ error: error.message });
     }
   },
+
+  getUserMe: async (req, res) => {
+    try {
+      const email = req.user.email;
+      const user = await User.findOne({ email: email }).select("-password");
+      res.send(user);
+    } catch (error) {
+      res.status(500).send({ error: error.message });
+    }
+  },
 };
 
 module.exports = AuthController;
