@@ -67,6 +67,12 @@ const postController = {
 
   update: async (req, res) => {
     try {
+      if (req.body.isAvailable !== null) {
+        const newPost = await Post.findByIdAndUpdate(req.params.id, req.body, {
+          new: true,
+        });
+        return res.status(200).send(newPost);
+      }
       const user = await User.findById(req.user.id);
       const post = await Post.findById(req.params.id);
       if (post.shop.toString() !== user.shop.toString()) {
