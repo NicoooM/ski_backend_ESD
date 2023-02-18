@@ -48,13 +48,21 @@ const AuthController = {
       if (!findUser) {
         return res.status(404).send({ message: "User not found" });
       }
-      const uid = uuidv4();
-      ResetTokenPassword.create({ user: findUser._id, token: uid });
+      const resetPassword = await ResetTokenPassword.findOne({
+        user: findUser._id,
+      });
+      let uid;
+      if (!resetPassword) {
+        uid = uuidv4();
+        ResetTokenPassword.create({ user: findUser._id, token: uid });
+      } else {
+        uid = resetPassword.token;
+      }
       const mailOptions = {
         from: "example@example.com",
         to: email,
         subject: "Réinitialisation de votre mot de passe",
-        html: `<a href="http://localhost:3000/reinitialiser-mot-de-passe/${uid}">Réinitialiser</a>`,
+        html: `<a href="http://localhost:3000/auth/reinitialiser-mot-de-passe/${uid}">Réinitialiser</a>`,
       };
       transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
@@ -89,6 +97,7 @@ const AuthController = {
         password: hashedPassword,
       });
       await updateUser.save();
+      await ResetTokenPassword.findByIdAndDelete(findResetPassword._id);
       res.send(updateUser);
     } catch (error) {
       res.status(500).send({ error: error.message });
